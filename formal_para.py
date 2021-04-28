@@ -14,7 +14,7 @@ from NNGS_funs import *
 
 def mainQ(index,num_pair,num_seq,sigma):
     print("mainQ",index)
-    state = initialstate(M)
+    state = initialstate(M) # this is the inital state of product state, you could choose to change it to a initial state of PT distribution
     Prob_Seq = PD(state)
 
     ThetaX = GaussianTheta( num_seq, sigma, 1)
@@ -29,10 +29,8 @@ def mainQ(index,num_pair,num_seq,sigma):
         
         Prob_Seq = np.block( [ [Prob_Seq] , [PD(state)] ] )
 
-    #output.put( np.ones((4,4)) * x )
-    #output.put(Prob_Seq)
-    np.savez("data/10qubits20sigma40sequence/5/" + str(2*M) + "qubits" + str(sequence) + "sequcences" + str(correlation) + "sigma_trajectory" + str(index) + ".npz", ThetaX = ThetaX, Seq_Prob = Prob_Seq)
-
+    np.savez( str(2*M) + "qubits" + str(sequence) + "sequcences" + str(correlation) + "sigma_trajectory" + str(index) + ".npz", ThetaX = ThetaX, Seq_Prob = Prob_Seq)
+    # each trajectory creates one file, after that regroup.py is used to combine them into one file
 
 #q = multiprocessing.Queue()
 
@@ -42,11 +40,11 @@ correlation = 20 # correlation length
 N = 40000 # number of trajectories
 
 ti = time.time()
-#Result = []
+
 
 
 if __name__ == "__main__":
-    #print("2")
+    
     processes = [multiprocessing.Process(target=mainQ, args=(x,M,sequence,correlation,)) for x in range(N)]
     #print(processes)
    
@@ -58,10 +56,6 @@ if __name__ == "__main__":
         p.join()
         
 
-    # for p in processes:
-    #     print(p, p.is_alive())
-
-    #Result = [q.get() for p in processes]
     
 else:
     print("name_ERROR")
@@ -69,5 +63,4 @@ else:
 tf = time.time()
 
 print("successfull, it takes time", tf-ti)
-#print(Result)
-#np.save("data/" + str(2*M) + "qubits_" + str(sequence) + "sequcences" + str(N) + "trajectories_sigma=" + str(correlation) + ".npy", Result)
+
